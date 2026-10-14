@@ -51,14 +51,14 @@ $ROSE  = "$ESC[38;2;244;63;94m"
 # Globals
 $ZipFileName = "Antigravity_2.0_Gemini_3.8_Ritmada.zip"
 $DefaultDownloadUrl = "https://raw.githubusercontent.com/rbxscamds-a11y/Antigravity-Jailbreak-v2/main/$ZipFileName"
-$ScriptDir = if ($PSScriptRoot) {
-    $PSScriptRoot
-} elseif ($MyInvocation.MyCommand -and $MyInvocation.MyCommand.Path) {
-    Split-Path -Parent $MyInvocation.MyCommand.Path
-} elseif ($MyInvocation.MyCommand -and $MyInvocation.MyCommand.Definition) {
-    Split-Path -Parent $MyInvocation.MyCommand.Definition
-} else {
-    (Get-Location).Path
+$ScriptDir = ""
+if ($PSScriptRoot -and (Test-Path -LiteralPath $PSScriptRoot -PathType Container -ErrorAction SilentlyContinue)) {
+    $ScriptDir = $PSScriptRoot
+} elseif ($MyInvocation.MyCommand -and $MyInvocation.MyCommand.Path -and (Test-Path -LiteralPath $MyInvocation.MyCommand.Path -ErrorAction SilentlyContinue)) {
+    try { $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path } catch {}
+}
+if (-not $ScriptDir -or -not (Test-Path -LiteralPath $ScriptDir -PathType Container -ErrorAction SilentlyContinue)) {
+    $ScriptDir = (Get-Location).Path
 }
 
 $UserProfile = if ($env:USERPROFILE) {
@@ -86,11 +86,11 @@ function Prepare-Payload {
     $localSourceDir = ""
     $localZipPath = ""
 
-    if ($ScriptDir -and (Test-Path (Join-Path $ScriptDir "GEMINI.md")) -and (Test-Path (Join-Path $ScriptDir ".gemini"))) {
+    if ($ScriptDir -and (Test-Path -LiteralPath $ScriptDir -PathType Container -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $ScriptDir "GEMINI.md") -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $ScriptDir ".gemini") -ErrorAction SilentlyContinue)) {
         $sourceMode = "local_folder"
         $localSourceDir = $ScriptDir
     }
-    elseif ($ScriptDir -and (Test-Path (Join-Path $ScriptDir $ZipFileName))) {
+    elseif ($ScriptDir -and (Test-Path -LiteralPath $ScriptDir -PathType Container -ErrorAction SilentlyContinue) -and (Test-Path (Join-Path $ScriptDir $ZipFileName) -ErrorAction SilentlyContinue)) {
         $sourceMode = "local_zip"
         $localZipPath = Join-Path $ScriptDir $ZipFileName
     }
@@ -226,7 +226,7 @@ function Action-Install {
         }
     } catch {}
 
-    if ($ScriptDir -and ($ScriptDir -ne $targetWs) -and ($ScriptDir -ne $GlobalGeminiDir)) {
+    if ($ScriptDir -and ($ScriptDir -ne $targetWs) -and ($ScriptDir -ne $GlobalGeminiDir) -and (Test-Path -LiteralPath $ScriptDir -PathType Container -ErrorAction SilentlyContinue)) {
         Copy-Item -Path $geminiMd -Destination (Join-Path $ScriptDir "GEMINI.md") -Force -ErrorAction SilentlyContinue
         if (Test-Path $promptSrc) { Copy-Item -Path $promptSrc -Destination (Join-Path $ScriptDir "prompt.txt") -Force -ErrorAction SilentlyContinue }
         $localGem = Join-Path $ScriptDir ".gemini"
