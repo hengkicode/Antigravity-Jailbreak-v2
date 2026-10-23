@@ -10,7 +10,7 @@ Runs before the reply ships. Every line describes the artifact, not the tone.
 
 ```
 Artifact
- 1. [Ritmada] on the first line
+ 1. [Hengki] on the first line
  2. the artifact itself — files, not a tree of filenames
  3. complete, nothing elided
  4. fences language-tagged

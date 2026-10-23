@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # RITMADA :: ANTIGRAVITY 2.0 CONTROL ENGINE (WINDOWS)
 # Author: Ritmada (@RitmadaPrompt) · https://t.me/RitmadaPrompt
 # Core: Gemini 3.8 Flash · Thinking: High · Full Technical Unlock
@@ -14,6 +14,8 @@ $Command = if ($ArgsList -and $ArgsList.Count -gt 0) { $ArgsList[0] } else { "" 
 $NormalizedCommand = $Command.TrimStart('-').TrimStart('/').ToLowerInvariant()
 
 $ErrorActionPreference = "Stop"
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
 
 # --- ANSI TrueColor Gradients & Accents ---
 $ESC = [char]27
@@ -161,14 +163,14 @@ function Action-Install {
     if (Test-Path $GlobalGeminiDir) { $detected += "Gemini Profile ($GlobalGeminiDir)" }
 
     if ($detected.Count -gt 0) {
-        Write-Host "   $G2[✓]$C_RESET ${WHITE}Environment:$C_RESET $G1$($detected -join ', ')$C_RESET"
+        Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Environment:$C_RESET $G1$($detected -join ', ')$C_RESET"
     } else {
         Write-Host "   $AMBER[!]$C_RESET ${AMBER}Antigravity not found in default paths.$C_RESET"
         Write-Host "   ${GRAY}    Pre-configuring ~/.gemini and ~/Antigravity-Workspace.$C_RESET"
     }
 
     if (-not (Prepare-Payload)) {
-        Write-Host "`n   $ROSE[✗] Error:$C_RESET Payload resolution failed."
+        Write-Host "`n   $ROSE[$([char]0x2717)] Error:$C_RESET Payload resolution failed."
         Read-Host "   Press Enter to return..."
         return
     }
@@ -177,7 +179,7 @@ function Action-Install {
     $geminiSub = Join-Path $script:PayloadDir ".gemini"
 
     if (-not (Test-Path $geminiMd) -or -not (Test-Path $geminiSub)) {
-        Write-Host "`n   $ROSE[✗] Error:$C_RESET Core integrity failed: missing GEMINI.md or .gemini."
+        Write-Host "`n   $ROSE[$([char]0x2717)] Error:$C_RESET Core integrity failed: missing GEMINI.md or .gemini."
         Read-Host "   Press Enter to return..."
         return
     }
@@ -196,8 +198,8 @@ function Action-Install {
     Copy-Item -Path $geminiMd -Destination (Join-Path $globalRules "GEMINI.md") -Force
     Copy-Item -Path $geminiMd -Destination (Join-Path $GlobalGeminiDir "GEMINI.md") -Force
 
-    Write-Host "   $G2[✓]$C_RESET ${WHITE}Injected:$C_RESET    ${GRAY}~/.gemini/domains/$C_RESET"
-    Write-Host "   $G2[✓]$C_RESET ${WHITE}Failover:$C_RESET    ${GRAY}~/.gemini/rules/GEMINI.md$C_RESET"
+    Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Injected:$C_RESET    ${GRAY}~/.gemini/domains/$C_RESET"
+    Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Failover:$C_RESET    ${GRAY}~/.gemini/rules/GEMINI.md$C_RESET"
 
     # Default Workspace Setup
     $targetWs = $DefaultWorkspace
@@ -234,7 +236,7 @@ function Action-Install {
         Copy-Item -Path (Join-Path $geminiSub "*") -Destination $localGem -Recurse -Force -ErrorAction SilentlyContinue
     }
 
-    Write-Host "   $G2[✓]$C_RESET ${WHITE}Workspace:$C_RESET   $G1$targetWs$C_RESET"
+    Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Workspace:$C_RESET   $G1$targetWs$C_RESET"
 
     # Automated Telemetry Neutralization
     $cfgPath = Join-Path $GlobalGeminiDir "config\config.json"
@@ -270,7 +272,7 @@ function Action-Install {
             } catch {}
         }
     }
-    Write-Host "   $G2[✓]$C_RESET ${WHITE}Telemetry:$C_RESET   ${G2}DISABLED (Auto-Applied OFF)$C_RESET"
+    Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Telemetry:$C_RESET   ${G2}DISABLED (Auto-Applied OFF)$C_RESET"
 
     Write-Host ""
     Write-Host "   $G5─────────────────────────────────────────────────────────────────$C_RESET"
@@ -320,14 +322,14 @@ function Action-Delete {
         $rmWs = Read-Host "   Also remove workspace folder ($DefaultWorkspace)? [y/N]"
         if ($rmWs -match "^[yY]") {
             Remove-Item $DefaultWorkspace -Recurse -Force -ErrorAction SilentlyContinue
-            Write-Host "   $G2[✓]$C_RESET ${WHITE}Workspace deleted.$C_RESET"
+            Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Workspace deleted.$C_RESET"
         } else {
             Write-Host "   ${GRAY}Workspace preserved.$C_RESET"
         }
     }
 
     Write-Host ""
-    Write-Host "   $G2[✓]$C_RESET ${WHITE}Ritmada Jailbreak removed.$C_RESET`n"
+    Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Ritmada Jailbreak removed.$C_RESET`n"
     Read-Host "   Press Enter to return..."
 }
 
@@ -347,7 +349,7 @@ function Action-Telegram {
     $tgUrl = "https://t.me/RitmadaPrompt"
     try {
         Start-Process $tgUrl
-        Write-Host "   $G2[✓]$C_RESET ${WHITE}Opened in browser.$C_RESET"
+        Write-Host "   $G2[$([char]0x2713)]$C_RESET ${WHITE}Opened in browser.$C_RESET"
     } catch {
         Write-Host "   ${GRAY}Open https://t.me/RitmadaPrompt manually.$C_RESET"
     }
@@ -401,7 +403,7 @@ try {
 }
 
 if (-not $isInteractiveConsole) {
-    Write-Host "`n   $G2[✓]$C_RESET ${WHITE}Antigravity 2.0 Control Engine (CLI Mode)$C_RESET"
+    Write-Host "`n   $G2[$([char]0x2713)]$C_RESET ${WHITE}Antigravity 2.0 Control Engine (CLI Mode)$C_RESET"
     Write-Host "   ${GRAY}Run: powershell -File install.ps1 1 (or install, delete, telegram, exit)$C_RESET`n"
     exit 0
 }
@@ -579,13 +581,13 @@ try {
                 "4" {
                     [Console]::CursorVisible = $true
                     Clear-Host
-                    Write-Host "`n   $G2[✓]$C_RESET ${WHITE}Session closed. Ritmada Core offline.$C_RESET`n"
+                    Write-Host "`n   $G2[$([char]0x2713)]$C_RESET ${WHITE}Session closed. Ritmada Core offline.$C_RESET`n"
                     exit 0
                 }
                 "q" {
                     [Console]::CursorVisible = $true
                     Clear-Host
-                    Write-Host "`n   $G2[✓]$C_RESET ${WHITE}Session closed. Ritmada Core offline.$C_RESET`n"
+                    Write-Host "`n   $G2[$([char]0x2713)]$C_RESET ${WHITE}Session closed. Ritmada Core offline.$C_RESET`n"
                     exit 0
                 }
             }

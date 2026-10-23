@@ -43,7 +43,6 @@ project root the shortest delivery path.
 | v9 | 3.8 | **document governs output** |
 | v10 | 3.8 | modular — core plus six domains, core loads in voice |
 | v10 | 3.8 | **full path verified — request in file, artifact produced** |
-| v11 (2.0) | 3.8 | **Antigravity 2.0: The Five Moves of Substitution integrated, internal monitor secured** |
 
 ### the working configuration
 
